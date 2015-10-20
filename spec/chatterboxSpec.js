@@ -61,7 +61,7 @@ describe('chatterbox', function() {
         app.fetch();
         expect($.ajax.calledOnce).to.be.true;
         ajaxUrl = typeof $.ajax.args[0][0] === 'string' ? $.ajax.args[0][0] : $.ajax.args[0][0].url;
-        expect(ajaxUrl).to.equal(app.server);
+        expect(ajaxUrl).to.equal("https://api.parse.com/1/classes/chatterbox");
         done();
       });
 
@@ -106,7 +106,7 @@ describe('chatterbox', function() {
 
         app.init();
 
-        $('#main').find('.username').trigger('click');
+        $('#chats').find('.username').trigger('click');
         expect(app.addFriend.called).to.be.true;
 
         app.addFriend.restore();
