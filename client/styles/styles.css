@@ -5,12 +5,12 @@ body {
     font-family: arial, sans-serif;
 }
 
-#main, #chats {
+#main, #chats .container{
     width: 500px;
     margin: auto;
     text-align: left;
     background: white;
-    padding: 50px 60px;
+    padding: 20px 25px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
 }
@@ -65,8 +65,15 @@ form input[type=text] {
     background-color: #eee;
 }
 
-.chat .username {
+#chats .username {
     font-weight: 800;
+    font-style: Tahoma;
+    font-size: 14px;
+}
+
+#chats p {
+    font-style: Tahoma;
+    font-size: 10px;
 }
 
 .chat:hover {

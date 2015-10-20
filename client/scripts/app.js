@@ -88,6 +88,7 @@ $(document).ready(function(){
 
   });
   $("#fetch").on("click", function(){
+    app.clearMessages();
     app.fetch();
   });
   $("body").on("click",".username", function(){
