@@ -27,6 +27,7 @@ app.fetch = function(){
       console.log('working');
       posts = data.results;
       displayPosts();
+      app.updateRooms();
     },
     error: function(data) {
       console.error('chatterbox: failed to fetch message')
@@ -40,8 +41,18 @@ var displayPosts = function() {
   });
 };
 
-app.clearMessages = function(){
-  $("#chats").children().remove();
+app.clearMessages = function(selector){
+  if (selector === undefined) {
+    $("#chats").children().remove();
+  } else {
+    _.each($("#chats").children(), function(child){
+      child = $(child);
+      if (child.attr('id') !== selector) {
+        child.remove();
+      }
+    })
+  }
+
 };
 
 app.addMessage = function(message){
@@ -56,13 +67,21 @@ app.addMessage = function(message){
   text.text(message.text);
   container.append(userName);
   container.append(text);
-  $("#chats").append(container);
+  $("#chats").prepend(container);
 };
 
 app.addRoom = function(roomName){
-  var temp = $("<option></option>");
-  temp.text(roomName);
-  $("#roomSelect").append(temp);
+  if (roomName !== undefined && roomName !== "") {
+    var fullName = roomName;
+    roomName = roomName.split(" ").join('')
+    roomName = removeFunnies(roomName);
+    var temp = $("<option id=" + roomName + "></option>");
+    temp.text(fullName);
+
+    if (!$('#roomSelect').find($('#'+roomName)).length){
+      $("#roomSelect").append(temp);
+    }
+  }
 };
 
 app.addFriend = function(name){
@@ -71,28 +90,49 @@ app.addFriend = function(name){
   $("#friendsList").append(friend);
 };
 
-
-
-var sendData = {
+app.updateRooms = function(){
+  var children = $("#chats").children();
+  _.each(children, function(child) {
+    child = $(child);
+    app.addRoom(child.attr('id')); 
+  });
 };
+
+var sendData = {};
 //message and send button
 $(document).ready(function(){
+  
   $("#send").on("click", function(){
     var inputMsg = $("#sendMessage").val();
-    
+
     sendData.username = window.location.search.slice(10);
     sendData.text = inputMsg;
-    sendData.roomname = "test";
+    sendData.roomname = $('#roomSelect option:selected').val();
 
     app.send(sendData);
 
   });
-  $("#fetch").on("click", function(){
+  $("#main").on("click","#fetch", function(){
     app.clearMessages();
     app.fetch();
   });
+
   $("body").on("click",".username", function(){
     app.addFriend(this.innerText);
     console.log("sdaf");
   });
+
+  $('#addRoom').on('click', function(){
+    var roomName = $('#inputRoom').val();
+    app.addRoom(roomName);
+  });
+
+  $("#roomSelect").on('select', function(){
+    app.clearMessages($('#roomSelect option:selected').val());
+  })
 });
+
+var removeFunnies = function(string){
+  var desired = string.replace(/[^\w\s]/gi, '');
+  return desired;
+};
